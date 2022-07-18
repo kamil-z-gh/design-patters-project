@@ -109,10 +109,6 @@ class AsteroidManagerSingleton {
   }
 
   private addFallenAsteroid(id: number) {
-    console.log({
-      indexOf: id,
-      index: this.asteroidsAlreadyFallenIds.indexOf(id) < 0,
-    });
     if (this.asteroidsAlreadyFallenIds.indexOf(id) > -1) return;
     this.asteroidsAlreadyFallenIds.push(id);
   }
@@ -183,10 +179,10 @@ AsteroidManager.moveAsteroids();
 flyweightFactory.listFlyweights();
 
 class Spaceship {
-  private state: State | undefined;
-  private stepAmmount = 5;
-  private Y = 50;
-  private X = 50;
+  public state!: State;
+  public stepAmmount = 5;
+  public Y = 50;
+  public X = 50;
 
   constructor(state: State) {
     this.transitionTo(state);
@@ -200,49 +196,57 @@ class Spaceship {
   }
 
   public moveForward(): void {
-    this.state?.moveForward();
-    this.moveRobot("forward");
-  }
-  public moveBackward(): void {
-    this.state?.moveBackward();
-    this.moveRobot("backward");
-  }
-  public moveLeft(): void {
-    this.state?.moveLeft();
-    this.moveRobot("left");
-  }
-  public moveRight(): void {
-    this.state?.moveRight();
-    this.moveRobot("right");
+    this.state.moveForward();
   }
 
-  public moveRobot(direction: "forward" | "backward" | "left" | "right") {
+  public moveBackward(): void {
+    this.state.moveBackward();
+  }
+
+  public moveLeft(): void {
+    this.state.moveLeft();
+  }
+
+  public moveRight(): void {
+    this.state.moveRight();
+  }
+
+  public reachedTopBorder() {
+    return this.X - this.stepAmmount < 5;
+  }
+
+  public reachedBottomBorder() {
+    return this.X + this.stepAmmount > 90;
+  }
+
+  public reachedLeftBorder() {
+    return this.Y - this.stepAmmount < 5;
+  }
+
+  public reachedRightBorder() {
+    return this.Y + this.stepAmmount > 95;
+  }
+
+  public moveSpaceshipDiv(
+    direction: "forward" | "backward" | "left" | "right"
+  ) {
     switch (direction) {
       case "forward":
-        if (this.X - this.stepAmmount < 5) {
-          break;
-        }
         spaceshipDiv.style.top = `${this.X - this.stepAmmount}%`;
         this.X -= this.stepAmmount;
         break;
+
       case "backward":
-        if (this.X + this.stepAmmount > 90) {
-          break;
-        }
         spaceshipDiv.style.top = `${this.X + this.stepAmmount}%`;
         this.X += this.stepAmmount;
         break;
+
       case "left":
-        if (this.Y - this.stepAmmount < 5) {
-          break;
-        }
         spaceshipDiv.style.left = `${this.Y - this.stepAmmount}%`;
         this.Y -= this.stepAmmount;
         break;
+
       case "right":
-        if (this.Y + this.stepAmmount > 95) {
-          break;
-        }
         spaceshipDiv.style.left = `${this.Y + this.stepAmmount}%`;
         this.Y += this.stepAmmount;
         break;
@@ -271,114 +275,185 @@ class ForwardState extends State {
   public moveForward(): void {}
 
   public moveBackward(): void {
-    this.context?.transitionTo(
-      // eslint-disable-next-line
-      new StopState()
-    );
+    if (this.context.reachedBottomBorder()) {
+      this.context?.transitionTo(new BackwardState());
+    } else {
+      this.context?.transitionTo(new MovingState());
+      this.context.moveSpaceshipDiv("backward");
+    }
   }
 
-  public moveLeft(): void {}
+  public moveLeft(): void {
+    if (this.context.reachedLeftBorder()) {
+      this.context?.transitionTo(new LeftState());
+    } else {
+      this.context?.transitionTo(new MovingState());
+      this.context.moveSpaceshipDiv("left");
+    }
+  }
 
-  public moveRight(): void {}
+  public moveRight(): void {
+    if (this.context.reachedRightBorder()) {
+      this.context?.transitionTo(new RightState());
+    } else {
+      this.context?.transitionTo(new MovingState());
+      this.context.moveSpaceshipDiv("right");
+    }
+  }
 }
 class BackwardState extends State {
   public moveForward(): void {
-    this.context?.transitionTo(
-      // eslint-disable-next-line
-      new StopState()
-    );
+    if (this.context.reachedTopBorder()) {
+      this.context?.transitionTo(new ForwardState());
+    } else {
+      this.context?.transitionTo(new MovingState());
+      this.context.moveSpaceshipDiv("forward");
+    }
   }
 
   public moveBackward(): void {}
 
-  public moveLeft(): void {}
+  public moveLeft(): void {
+    if (this.context.reachedLeftBorder()) {
+      this.context?.transitionTo(new LeftState());
+    } else {
+      this.context?.transitionTo(new MovingState());
+      this.context.moveSpaceshipDiv("left");
+    }
+  }
 
-  public moveRight(): void {}
+  public moveRight(): void {
+    if (this.context.reachedRightBorder()) {
+      this.context?.transitionTo(new RightState());
+    } else {
+      this.context?.transitionTo(new MovingState());
+      this.context.moveSpaceshipDiv("right");
+    }
+  }
 }
 
 class LeftState extends State {
-  public moveForward(): void {}
+  public moveForward(): void {
+    if (this.context.reachedTopBorder()) {
+      this.context?.transitionTo(new ForwardState());
+    } else {
+      this.context?.transitionTo(new MovingState());
+      this.context.moveSpaceshipDiv("forward");
+    }
+  }
 
-  public moveBackward(): void {}
+  public moveBackward(): void {
+    if (this.context.reachedBottomBorder()) {
+      this.context?.transitionTo(new BackwardState());
+    } else {
+      this.context?.transitionTo(new MovingState());
+      this.context.moveSpaceshipDiv("backward");
+    }
+  }
 
   public moveLeft(): void {}
 
   public moveRight(): void {
-    this.context?.transitionTo(
-      // eslint-disable-next-line
-      new StopState()
-    );
+    if (this.context.reachedRightBorder()) {
+      this.context?.transitionTo(new RightState());
+    } else {
+      this.context?.transitionTo(new MovingState());
+      this.context.moveSpaceshipDiv("right");
+    }
   }
 }
 
 class RightState extends State {
-  public moveForward(): void {}
+  public moveForward(): void {
+    if (this.context.reachedTopBorder()) {
+      this.context?.transitionTo(new ForwardState());
+    } else {
+      this.context?.transitionTo(new MovingState());
+      this.context.moveSpaceshipDiv("forward");
+    }
+  }
 
-  public moveBackward(): void {}
+  public moveBackward(): void {
+    if (this.context.reachedBottomBorder()) {
+      this.context?.transitionTo(new BackwardState());
+    } else {
+      this.context?.transitionTo(new MovingState());
+      this.context.moveSpaceshipDiv("backward");
+    }
+  }
 
   public moveLeft(): void {
-    this.context?.transitionTo(
-      // eslint-disable-next-line
-      new StopState()
-    );
+    if (this.context.reachedLeftBorder()) {
+      this.context?.transitionTo(new LeftState());
+    } else {
+      this.context?.transitionTo(new MovingState());
+      this.context.moveSpaceshipDiv("left");
+    }
   }
 
   public moveRight(): void {}
 }
 
-class StopState extends State {
+class MovingState extends State {
   public moveForward(): void {
-    this.context?.transitionTo(
-      // eslint-disable-next-line
-      new ForwardState()
-    );
+    if (this.context.reachedTopBorder()) {
+      this.context?.transitionTo(new ForwardState());
+    } else {
+      this.context?.transitionTo(new MovingState());
+      this.context.moveSpaceshipDiv("forward");
+    }
   }
 
   public moveBackward(): void {
-    this.context?.transitionTo(
-      // eslint-disable-next-line
-      new BackwardState()
-    );
+    if (this.context.reachedBottomBorder()) {
+      this.context?.transitionTo(new BackwardState());
+    } else {
+      this.context?.transitionTo(new MovingState());
+      this.context.moveSpaceshipDiv("backward");
+    }
   }
 
   public moveLeft(): void {
-    this.context?.transitionTo(
-      // eslint-disable-next-line
-      new LeftState()
-    );
+    if (this.context.reachedLeftBorder()) {
+      this.context?.transitionTo(new LeftState());
+    } else {
+      this.context?.transitionTo(new MovingState());
+      this.context.moveSpaceshipDiv("left");
+    }
   }
 
   public moveRight(): void {
-    this.context?.transitionTo(
-      // eslint-disable-next-line
-      new RightState()
-    );
+    if (this.context.reachedRightBorder()) {
+      this.context?.transitionTo(new RightState());
+    } else {
+      this.context?.transitionTo(new MovingState());
+      this.context.moveSpaceshipDiv("right");
+    }
   }
 }
 
-const robot = new Spaceship(new StopState());
+const spaceship = new Spaceship(new MovingState());
 
 window.addEventListener("keydown", (e) => {
-  console.log({ keyCode: e.keyCode });
   switch (e.keyCode) {
     // W
     case 87:
-      robot.moveForward();
+      spaceship.moveForward();
       break;
 
     // S
     case 83:
-      robot.moveBackward();
+      spaceship.moveBackward();
       break;
 
     // A
     case 65:
-      robot.moveLeft();
+      spaceship.moveLeft();
       break;
 
     // D
     case 68:
-      robot.moveRight();
+      spaceship.moveRight();
       break;
 
     default:
