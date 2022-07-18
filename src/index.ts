@@ -1,8 +1,6 @@
 const spaceshipDiv = document.getElementById("spaceship") as HTMLDivElement;
 const app = document.getElementById("app") as HTMLDivElement;
 
-type WheelState = "backwardMove" | "stop" | "forwardMove";
-
 class Robot {
   private state: State | undefined;
   private stepAmmount = 5;
@@ -74,8 +72,6 @@ class Robot {
 abstract class State {
   // @ts-ignore
   protected context: Robot;
-  abstract leftWheel: WheelState;
-  abstract rightWheel: WheelState;
 
   public setContext(context: Robot) {
     this.context = context;
@@ -91,9 +87,6 @@ abstract class State {
 }
 
 class ForwardState extends State {
-  public leftWheel: WheelState = "forwardMove";
-  public rightWheel: WheelState = "forwardMove";
-
   public moveForward(): void {}
 
   public moveBackward(): void {
@@ -108,9 +101,6 @@ class ForwardState extends State {
   public moveRight(): void {}
 }
 class BackwardState extends State {
-  public leftWheel: WheelState = "backwardMove";
-  public rightWheel: WheelState = "backwardMove";
-
   public moveForward(): void {
     this.context?.transitionTo(
       // eslint-disable-next-line
@@ -126,9 +116,6 @@ class BackwardState extends State {
 }
 
 class LeftState extends State {
-  public leftWheel: WheelState = "backwardMove";
-  public rightWheel: WheelState = "forwardMove";
-
   public moveForward(): void {}
 
   public moveBackward(): void {}
@@ -144,9 +131,6 @@ class LeftState extends State {
 }
 
 class RightState extends State {
-  public leftWheel: WheelState = "forwardMove";
-  public rightWheel: WheelState = "backwardMove";
-
   public moveForward(): void {}
 
   public moveBackward(): void {}
@@ -162,9 +146,6 @@ class RightState extends State {
 }
 
 class StopState extends State {
-  public leftWheel: WheelState = "stop";
-  public rightWheel: WheelState = "stop";
-
   public moveForward(): void {
     this.context?.transitionTo(
       // eslint-disable-next-line
