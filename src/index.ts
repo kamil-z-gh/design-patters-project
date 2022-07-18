@@ -1,17 +1,18 @@
-const robotDiv = document.getElementById("robot") as HTMLDivElement;
+const spaceshipDiv = document.getElementById("spaceship") as HTMLDivElement;
+const app = document.getElementById("app") as HTMLDivElement;
 
 type WheelState = "backwardMove" | "stop" | "forwardMove";
 
 class Robot {
   private state: State | undefined;
-
+  private stepAmmount = 5;
   private Y = 50;
   private X = 50;
 
   constructor(state: State) {
     this.transitionTo(state);
-    robotDiv.style.top = `${this.X}%`;
-    robotDiv.style.left = `${this.Y}%`;
+    spaceshipDiv.style.top = `${this.X}%`;
+    spaceshipDiv.style.left = `${this.Y}%`;
   }
 
   public transitionTo(state: State): void {
@@ -39,20 +40,32 @@ class Robot {
   public moveRobot(direction: "forward" | "backward" | "left" | "right") {
     switch (direction) {
       case "forward":
-        robotDiv.style.top = `${this.X - 5}%`;
-        this.X -= 5;
+        if (this.X - this.stepAmmount < 5) {
+          break;
+        }
+        spaceshipDiv.style.top = `${this.X - this.stepAmmount}%`;
+        this.X -= this.stepAmmount;
         break;
       case "backward":
-        robotDiv.style.top = `${this.X + 5}%`;
-        this.X += 5;
+        if (this.X + this.stepAmmount > 90) {
+          break;
+        }
+        spaceshipDiv.style.top = `${this.X + this.stepAmmount}%`;
+        this.X += this.stepAmmount;
         break;
       case "left":
-        robotDiv.style.left = `${this.Y - 5}%`;
-        this.Y -= 5;
+        if (this.Y - this.stepAmmount < 5) {
+          break;
+        }
+        spaceshipDiv.style.left = `${this.Y - this.stepAmmount}%`;
+        this.Y -= this.stepAmmount;
         break;
       case "right":
-        robotDiv.style.left = `${this.Y + 5}%`;
-        this.Y += 5;
+        if (this.Y + this.stepAmmount > 95) {
+          break;
+        }
+        spaceshipDiv.style.left = `${this.Y + this.stepAmmount}%`;
+        this.Y += this.stepAmmount;
         break;
     }
   }

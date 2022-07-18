@@ -5,3 +5,17 @@ body,
   padding: 0;
   box-sizing: border-box;
 }
+
+body {
+  font-family: sans-serif;
+  height: 100vh;
+}
+
+#app {
+  height: 100vh;
+  position: relative;
+  background-image: url("../images/spaceBG.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
