@@ -9,5 +9,6 @@
     "lib": ["es6", "dom"],
     "rootDir": "src",
     "moduleResolution": "node"
-  }
+  },
+  "exclude": ["./dist"]
 }
