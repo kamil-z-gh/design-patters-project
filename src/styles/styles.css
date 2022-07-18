@@ -344,8 +344,18 @@ body {
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
   background-image: url("../images/spaceship.png");
-  background-image: url("../images/spaceship.png");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat; }
+
+.asteroid {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat; }
+  .asteroid.burning {
+    background-image: url("../images/burning.png"); }
+  .asteroid.burningSmall {
+    background-image: url("../images/burningSmall.png"); }
+  .asteroid.black {
+    background-image: url("../images/black.png"); }
 /*# sourceMappingURL=styles.css.map */

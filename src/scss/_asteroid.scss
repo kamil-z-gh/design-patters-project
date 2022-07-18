@@ -1,0 +1,17 @@
+.asteroid {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  &.burning {
+    background-image: url("../images/burning.png");
+  }
+
+  &.burningSmall {
+    background-image: url("../images/burningSmall.png");
+  }
+
+  &.black {
+    background-image: url("../images/black.png");
+  }
+}
