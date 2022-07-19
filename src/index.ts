@@ -151,6 +151,10 @@ class AsteroidManagerSingleton {
       spaceship.h + spaceship.y > asteroid.y
     ) {
       this.stopAsteroids();
+      const modalLost = document.querySelector(
+        ".modal--lost"
+      ) as HTMLDivElement;
+      modalLost.classList.add("modal--open");
     }
   }
 
@@ -195,6 +199,10 @@ class AsteroidManagerSingleton {
           this.setIntervalIndex
         ) {
           this.stopAsteroids();
+          const modalWin = document.querySelector(
+            ".modal--win"
+          ) as HTMLDivElement;
+          modalWin.classList.add("modal--open");
         }
       });
     }, 200);
@@ -217,7 +225,7 @@ for (let i = 0; i < asteroidsAmount; i++) {
 
   const concreteAsteroid = new ConcreteAsteroid(
     getRandomNumber(app.clientWidth - 70),
-    getRandomNumber(10) + 5,
+    getRandomNumber(20) + 5,
     flyweight,
     i
   );

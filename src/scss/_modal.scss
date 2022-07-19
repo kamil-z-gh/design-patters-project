@@ -1,0 +1,36 @@
+.modal {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: black;
+  width: 250px;
+  height: 100px;
+  padding: 16px;
+  border-radius: 16px;
+
+
+  &__title {
+    font-size: 24px;
+
+    &--win {
+      color: green;
+    }
+  }
+
+  &__desc {
+    font-size: 18px;
+    color: white;
+  }
+
+
+  &--open {
+    display: block;
+  }
+
+
+  &--lost {
+    color: red;
+  }
+}
