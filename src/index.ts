@@ -32,12 +32,14 @@ class ConcreteAsteroid {
     this.id = id;
   }
 
+  public getAsteroidDiv() {
+    return document.querySelector(`[data-id="${this.id}"]`) as HTMLDivElement;
+  }
+
   public updateYPosition(y: number) {
     if (y > app.clientHeight - this.flyweight.height) return this.id;
 
-    const asteroidDiv = document.querySelector(
-      `[data-id="${this.id}"]`
-    ) as HTMLDivElement;
+    const asteroidDiv = this.getAsteroidDiv();
 
     asteroidDiv.style.top = `${y}px`;
     this.yPosition = y;
@@ -113,6 +115,45 @@ class AsteroidManagerSingleton {
     this.asteroidsAlreadyFallenIds.push(id);
   }
 
+  private detectColission(concreteAsteroid: ConcreteAsteroid) {
+    const spaceshipHeight = spaceshipDiv.clientHeight;
+    const spaceshipWidth = spaceshipDiv.clientWidth;
+
+    const spaceshipYPositionStart = spaceshipDiv.offsetTop;
+    const spaceshipXPositionStart = spaceshipDiv.offsetLeft;
+
+    const spaceship = {
+      x: spaceshipXPositionStart,
+      y: spaceshipYPositionStart,
+      h: spaceshipHeight,
+      w: spaceshipWidth,
+    };
+
+    const asteroidDiv = concreteAsteroid.getAsteroidDiv();
+
+    const asteroidHeight = asteroidDiv.clientHeight;
+    const asteroidWidth = asteroidDiv.clientWidth;
+
+    const asteroidYPositionStart = asteroidDiv.offsetTop;
+    const asteroidXPositionStart = asteroidDiv.offsetLeft;
+
+    const asteroid = {
+      x: asteroidXPositionStart,
+      y: asteroidYPositionStart,
+      h: asteroidHeight,
+      w: asteroidWidth,
+    };
+
+    if (
+      spaceship.x < asteroid.x + asteroid.w &&
+      spaceship.x + spaceship.w > asteroid.x &&
+      spaceship.y < asteroid.y + asteroid.h &&
+      spaceship.h + spaceship.y > asteroid.y
+    ) {
+      this.stopAsteroids();
+    }
+  }
+
   public drawAsteroids() {
     this.asteroids.forEach((asteroid) => {
       const asteroidElement = document.createElement("div");
@@ -129,9 +170,18 @@ class AsteroidManagerSingleton {
       app.appendChild(asteroidElement);
     });
   }
+
+  private stopAsteroids() {
+    if (this.setIntervalIndex) {
+      clearInterval(this.setIntervalIndex);
+      this.setIntervalIndex = null;
+    }
+  }
+
   public moveAsteroids() {
     this.setIntervalIndex = setInterval(() => {
       this.asteroids.forEach((asteroid) => {
+        this.detectColission(asteroid);
         const id = asteroid.updateYPosition(
           asteroid.yPosition + asteroid.speed
         );
@@ -144,8 +194,7 @@ class AsteroidManagerSingleton {
           this.asteroidsAlreadyFallenIds.length === this.asteroids.length &&
           this.setIntervalIndex
         ) {
-          clearInterval(this.setIntervalIndex);
-          this.setIntervalIndex = null;
+          this.stopAsteroids();
         }
       });
     }, 200);
@@ -181,14 +230,14 @@ flyweightFactory.listFlyweights();
 
 class Spaceship {
   public state!: State;
-  public stepAmmount = 5;
-  public Y = 50;
-  public X = 50;
+  public stepAmmount = 50;
+  public Y = app.clientHeight / 2;
+  public X = app.clientWidth / 2;
 
   constructor(state: State) {
     this.transitionTo(state);
-    spaceshipDiv.style.top = `${this.X}%`;
-    spaceshipDiv.style.left = `${this.Y}%`;
+    spaceshipDiv.style.top = `${app.clientHeight / 2}px`;
+    spaceshipDiv.style.left = `${app.clientWidth / 2}px`;
   }
 
   public transitionTo(state: State): void {
@@ -213,19 +262,23 @@ class Spaceship {
   }
 
   public reachedTopBorder() {
-    return this.X - this.stepAmmount < 5;
+    return this.Y - this.stepAmmount < 0 + spaceshipDiv.clientHeight;
   }
 
   public reachedBottomBorder() {
-    return this.X + this.stepAmmount > 90;
+    return (
+      this.Y + this.stepAmmount > app.clientHeight - spaceshipDiv.clientHeight
+    );
   }
 
   public reachedLeftBorder() {
-    return this.Y - this.stepAmmount < 5;
+    return this.X - this.stepAmmount < 0 + spaceshipDiv.clientWidth;
   }
 
   public reachedRightBorder() {
-    return this.Y + this.stepAmmount > 95;
+    return (
+      this.X + this.stepAmmount > app.clientWidth - spaceshipDiv.clientWidth
+    );
   }
 
   public moveSpaceshipDiv(
@@ -233,23 +286,43 @@ class Spaceship {
   ) {
     switch (direction) {
       case "forward":
-        spaceshipDiv.style.top = `${this.X - this.stepAmmount}%`;
-        this.X -= this.stepAmmount;
-        break;
-
-      case "backward":
-        spaceshipDiv.style.top = `${this.X + this.stepAmmount}%`;
-        this.X += this.stepAmmount;
-        break;
-
-      case "left":
-        spaceshipDiv.style.left = `${this.Y - this.stepAmmount}%`;
+        console.log({
+          this_Y: this.Y,
+          this_stepAmount: this.stepAmmount,
+          total: this.Y - this.stepAmmount,
+        });
+        spaceshipDiv.style.top = `${this.Y - this.stepAmmount}px`;
         this.Y -= this.stepAmmount;
         break;
 
-      case "right":
-        spaceshipDiv.style.left = `${this.Y + this.stepAmmount}%`;
+      case "backward":
+        console.log({
+          this_Y: this.Y,
+          this_stepAmount: this.stepAmmount,
+          total: this.Y + this.stepAmmount,
+        });
+        spaceshipDiv.style.top = `${this.Y + this.stepAmmount}px`;
         this.Y += this.stepAmmount;
+        break;
+
+      case "left":
+        console.log({
+          this_Y: this.Y,
+          this_stepAmount: this.stepAmmount,
+          total: this.X - this.stepAmmount,
+        });
+        spaceshipDiv.style.left = `${this.X - this.stepAmmount}px`;
+        this.X -= this.stepAmmount;
+        break;
+
+      case "right":
+        console.log({
+          this_X: this.X,
+          this_stepAmount: this.stepAmmount,
+          total: this.X + this.stepAmmount,
+        });
+        spaceshipDiv.style.left = `${this.X + this.stepAmmount}px`;
+        this.X += this.stepAmmount;
         break;
     }
   }
@@ -406,6 +479,7 @@ class MovingState extends State {
   }
 
   public moveBackward(): void {
+    console.log({ movingBackward: "HERE" });
     if (this.context.reachedBottomBorder()) {
       this.context?.transitionTo(new BackwardState());
     } else {
