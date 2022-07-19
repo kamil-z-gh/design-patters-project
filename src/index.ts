@@ -165,8 +165,9 @@ for (let i = 0; i < asteroidsAmount; i++) {
   const flyweight = flyweightFactory.getFlyweight(
     i % 2 === 1 ? "burning" : i % 3 === 1 ? "burningSmall" : "black"
   );
+
   const concreteAsteroid = new ConcreteAsteroid(
-    getRandomNumber(1900),
+    getRandomNumber(app.clientWidth - 70),
     getRandomNumber(10) + 5,
     flyweight,
     i
