@@ -370,7 +370,8 @@ body {
   width: 250px;
   height: 100px;
   padding: 16px;
-  border-radius: 16px; }
+  border-radius: 16px;
+  z-index: 10; }
   .modal__title {
     font-size: 24px; }
     .modal__title--win {
