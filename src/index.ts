@@ -355,12 +355,12 @@ abstract class State {
   public abstract moveRight(): void;
 }
 
-class ForwardState extends State {
+class NoForwardState extends State {
   public moveForward(): void {}
 
   public moveBackward(): void {
     if (this.context.reachedBottomBorder()) {
-      this.context?.transitionTo(new BackwardState());
+      this.context?.transitionTo(new NoBackwardState());
     } else {
       this.context?.transitionTo(new MovingState());
       this.context.moveSpaceshipDiv("backward");
@@ -369,7 +369,7 @@ class ForwardState extends State {
 
   public moveLeft(): void {
     if (this.context.reachedLeftBorder()) {
-      this.context?.transitionTo(new LeftState());
+      this.context?.transitionTo(new NoLeftState());
     } else {
       this.context?.transitionTo(new MovingState());
       this.context.moveSpaceshipDiv("left");
@@ -378,17 +378,17 @@ class ForwardState extends State {
 
   public moveRight(): void {
     if (this.context.reachedRightBorder()) {
-      this.context?.transitionTo(new RightState());
+      this.context?.transitionTo(new NoRightState());
     } else {
       this.context?.transitionTo(new MovingState());
       this.context.moveSpaceshipDiv("right");
     }
   }
 }
-class BackwardState extends State {
+class NoBackwardState extends State {
   public moveForward(): void {
     if (this.context.reachedTopBorder()) {
-      this.context?.transitionTo(new ForwardState());
+      this.context?.transitionTo(new NoForwardState());
     } else {
       this.context?.transitionTo(new MovingState());
       this.context.moveSpaceshipDiv("forward");
@@ -399,7 +399,7 @@ class BackwardState extends State {
 
   public moveLeft(): void {
     if (this.context.reachedLeftBorder()) {
-      this.context?.transitionTo(new LeftState());
+      this.context?.transitionTo(new NoLeftState());
     } else {
       this.context?.transitionTo(new MovingState());
       this.context.moveSpaceshipDiv("left");
@@ -408,7 +408,7 @@ class BackwardState extends State {
 
   public moveRight(): void {
     if (this.context.reachedRightBorder()) {
-      this.context?.transitionTo(new RightState());
+      this.context?.transitionTo(new NoRightState());
     } else {
       this.context?.transitionTo(new MovingState());
       this.context.moveSpaceshipDiv("right");
@@ -416,10 +416,10 @@ class BackwardState extends State {
   }
 }
 
-class LeftState extends State {
+class NoLeftState extends State {
   public moveForward(): void {
     if (this.context.reachedTopBorder()) {
-      this.context?.transitionTo(new ForwardState());
+      this.context?.transitionTo(new NoForwardState());
     } else {
       this.context?.transitionTo(new MovingState());
       this.context.moveSpaceshipDiv("forward");
@@ -428,7 +428,7 @@ class LeftState extends State {
 
   public moveBackward(): void {
     if (this.context.reachedBottomBorder()) {
-      this.context?.transitionTo(new BackwardState());
+      this.context?.transitionTo(new NoBackwardState());
     } else {
       this.context?.transitionTo(new MovingState());
       this.context.moveSpaceshipDiv("backward");
@@ -439,7 +439,7 @@ class LeftState extends State {
 
   public moveRight(): void {
     if (this.context.reachedRightBorder()) {
-      this.context?.transitionTo(new RightState());
+      this.context?.transitionTo(new NoRightState());
     } else {
       this.context?.transitionTo(new MovingState());
       this.context.moveSpaceshipDiv("right");
@@ -447,10 +447,10 @@ class LeftState extends State {
   }
 }
 
-class RightState extends State {
+class NoRightState extends State {
   public moveForward(): void {
     if (this.context.reachedTopBorder()) {
-      this.context?.transitionTo(new ForwardState());
+      this.context?.transitionTo(new NoForwardState());
     } else {
       this.context?.transitionTo(new MovingState());
       this.context.moveSpaceshipDiv("forward");
@@ -459,7 +459,7 @@ class RightState extends State {
 
   public moveBackward(): void {
     if (this.context.reachedBottomBorder()) {
-      this.context?.transitionTo(new BackwardState());
+      this.context?.transitionTo(new NoBackwardState());
     } else {
       this.context?.transitionTo(new MovingState());
       this.context.moveSpaceshipDiv("backward");
@@ -468,7 +468,7 @@ class RightState extends State {
 
   public moveLeft(): void {
     if (this.context.reachedLeftBorder()) {
-      this.context?.transitionTo(new LeftState());
+      this.context?.transitionTo(new NoLeftState());
     } else {
       this.context?.transitionTo(new MovingState());
       this.context.moveSpaceshipDiv("left");
@@ -481,7 +481,7 @@ class RightState extends State {
 class MovingState extends State {
   public moveForward(): void {
     if (this.context.reachedTopBorder()) {
-      this.context?.transitionTo(new ForwardState());
+      this.context?.transitionTo(new NoForwardState());
     } else {
       this.context?.transitionTo(new MovingState());
       this.context.moveSpaceshipDiv("forward");
@@ -491,7 +491,7 @@ class MovingState extends State {
   public moveBackward(): void {
     console.log({ movingBackward: "HERE" });
     if (this.context.reachedBottomBorder()) {
-      this.context?.transitionTo(new BackwardState());
+      this.context?.transitionTo(new NoBackwardState());
     } else {
       this.context?.transitionTo(new MovingState());
       this.context.moveSpaceshipDiv("backward");
@@ -500,7 +500,7 @@ class MovingState extends State {
 
   public moveLeft(): void {
     if (this.context.reachedLeftBorder()) {
-      this.context?.transitionTo(new LeftState());
+      this.context?.transitionTo(new NoLeftState());
     } else {
       this.context?.transitionTo(new MovingState());
       this.context.moveSpaceshipDiv("left");
@@ -509,7 +509,7 @@ class MovingState extends State {
 
   public moveRight(): void {
     if (this.context.reachedRightBorder()) {
-      this.context?.transitionTo(new RightState());
+      this.context?.transitionTo(new NoRightState());
     } else {
       this.context?.transitionTo(new MovingState());
       this.context.moveSpaceshipDiv("right");
