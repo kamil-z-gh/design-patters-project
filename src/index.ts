@@ -97,6 +97,8 @@ class AsteroidManagerSingleton {
   private setIntervalIndex: number | null = null;
   private asteroidsAlreadyFallenIds: number[] = [];
 
+  private constructor() {}
+
   public static getInstance(): AsteroidManagerSingleton {
     if (!AsteroidManagerSingleton.instance) {
       AsteroidManagerSingleton.instance = new AsteroidManagerSingleton();
